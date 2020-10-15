@@ -1,57 +1,74 @@
 #!/bin/bash -x
-#WELCOM TO FLIP COIN SIMULATION#
 
-function Triplet()
+#WELCOME TO FLIP COIN SIMULATION#
+
+#Head And TAil Combination
+function UserFlipCoins()
 {
-	HEAD=0;
-	noofcoin=3;
-	temp=100;
+	echo "Enter number of times you want to flip:"
+	read times
 
-	declare -A tripletFlip
-        echo ""
-        echo "Enter the number of time you want to flip coin:"
-        read times
-	
-	for (( count=0;count<$times;count++ ))
+	echo " Enter No of coins for Singlet ,doublet ,triplet:"
+	read NoOfcoins
+
+
+	declare -A flipStore
+	flip=0
+	temp=0
+	max=0
+	temp1=100
+
+
+        for(( i=0; i<times; i++ ))
         do
-		for (( count1=0;count1<$noofcoin;count1++ ))
+                face=""
+                for(( j=0; j<NoOfcoins; j++ ))
                 do
-			flipcoin=$((RANDOM%2))
-            
-		    	if [[ $flipcoin -eq $HEAD ]]
-         		then
-            			coinSide+=H
-         		else
-            			coinSide+=T
-         		fi
+                        
+                        flipCoin=$((RANDOM%2))
+                        
+			if [[ $flipCoin -eq $flip ]]
+                        then
+                                face=Head++
+                        else
+                                face=Tail++
+                        fi
                 done
-                	((tripletFlip[$coinSide]++))
-                	coinSide=""
+                flipStore[$face]=$((${flipStore[$face]}+1))
         done
 
+        	echo "Count of all combination: " ${flipStore[@]}
+		echo "All head and tail combination:" ${!flipStore[@]}
+
+}
 
 
-function TotalTriplePercentage()
+#percentage of head and tail combination or  Wininnig combination 
+function TotalPercentageFlip()
 {
+        for i in ${!flipStore[@]}
+        {
+                let flipStore[$i]=$((${flipStore[$i]}))/$times*temp1
+                temp=${flipStore[$i]}
 
-	   for index in ${!tripletFlip[@]}
-       	   do
-     		let triplletFlip[$index]=(${tripletFlip[$index]}*$temp)/$numberOfCoinFlip
-		
-   	   done 
-		echo "tripletflip:" $tripletFlip[$index]
-	
+                if (( $temp -ge $max ))
+                then
+                        max=$temp
+                        key=$i
+                fi
+        }
 }
 
-
-}
 main()
 {
 
-Triplet
-TotalTriplePercentage
+UserFlipCoins 
+TotalPercentageFlip
+
+echo""
+echo "percentage of all combination:${flipStore[@]}"
+echo "Maximum  winning combination:" $max ":" $key
 
 }
 main
-
 
